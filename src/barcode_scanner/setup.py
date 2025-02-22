@@ -13,9 +13,9 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='sai',
+    maintainer='Sai Ganesh Raju',
     maintainer_email='rsaiganesh74@gmail.com',
-    description='TODO: Package description',
+    description='TODO: This package will mimic a barcode scanner',
     license='Apache-2.0',
     tests_require=['pytest'],
     entry_points={
