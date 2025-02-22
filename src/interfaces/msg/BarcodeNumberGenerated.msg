@@ -1,0 +1,1 @@
+int32 barcode_number_generated
