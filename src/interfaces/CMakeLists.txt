@@ -15,6 +15,7 @@ find_package(rosidl_default_generators REQUIRED)
 rosidl_generate_interfaces(${PROJECT_NAME}
   "srv/BarcodeNumberScanned.srv"
   "msg/BarcodeNumberGenerated.msg"
+  "action/PickRequest.action"
   DEPENDENCIES std_msgs
 )
 
