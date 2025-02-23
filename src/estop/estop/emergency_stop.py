@@ -10,7 +10,7 @@ class Estop(Node):
     def __init__(self):
         super().__init__('estop_node')
         
-        self.publish_interval = 0.01 #rate at which the publisher published the barcode number
+        self.publish_interval = 0.01 #rate at which the publisher published the estop status
 
         self.pub = self.create_publisher(Bool,'estop_status',10) #keeping 10 as depth so that subscriber has access to 10 last numbers in case of delay
 
