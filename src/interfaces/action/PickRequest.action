@@ -1,6 +1,7 @@
 int8 number_of_items
 ---
 bool status
+int32 barcode
 string reason
 ---
 float32 progress

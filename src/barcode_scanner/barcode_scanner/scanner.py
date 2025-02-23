@@ -31,6 +31,7 @@ class BarcodeScanner(Node):
         self.pub.publish(self.barcode_msg)
 
     def cb_barcode_request(self,request,response):
+        request #using the variable to avoid unused variable warning
         response.barcode_num_scanned = self.last_scanned_barcode
         self.get_logger().info(f'Incoming request for barcode scanned. Sent: {response.barcode_num_scanned}')
         return response

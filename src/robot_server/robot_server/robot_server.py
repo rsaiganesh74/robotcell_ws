@@ -21,7 +21,7 @@ class RobotServer(Node):
         self.create_subscription(Bool,'door_status',self.cb_doorhandle,10,callback_group=self.reentrant_callback_group)
         self.create_subscription(Bool,'estop_status',self.cb_estop,10,callback_group=self.reentrant_callback_group)
 
-        self.robot_server = ActionServer(self,PickRequest,'pick_request',self.cb_execute_request)
+        self.robot_server = ActionServer(self,PickRequest,'pick_request',self.cb_execute_request,callback_group=self.reentrant_callback_group)
 
         self.total_wait_duration = 0
 
