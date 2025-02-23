@@ -1,0 +1,6 @@
+int8 number_of_items
+---
+bool status
+string reason
+---
+float32 progress
