@@ -7,6 +7,7 @@
   <maintainer email="rsaiganesh74@gmail.com">Sai Ganesh Raju</maintainer>
   <license>Apache-2.0</license>
 
+  <exec_depend>rclpy</exec_depend>
   <exec_depend>interfaces</exec_depend>
 
   <test_depend>ament_copyright</test_depend>
