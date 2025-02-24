@@ -32,20 +32,23 @@ class DoorHandle(Node):
             if request.data:
                 response.success = False
                 response.message = "Failed to execute request. Door is already closed."
+                self.get_logger().error(f'{response.message}')
             else:
                 response.success = True
                 response.message = "Request successfully executed. Door is now open."
+                self.get_logger().warning(f'{response.message}')
         else:
             if request.data:
                 response.success = True
                 response.message = "Request successfully executed. Door is now closed."
+                self.get_logger().info(f'{response.message}')
             else:
                 response.success = False
                 response.message = "Failed to execute request. Door is already open."
+                self.get_logger().warning(f'{response.message}')
         if response.success:
             self.door_state = not self.door_state
-
-        self.get_logger().info(f'{response.message}')
+        
         return response
 
 def main():
