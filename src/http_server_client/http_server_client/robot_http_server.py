@@ -145,7 +145,7 @@ def pick():
     except Exception as e:
         robot_http_server.get_logger().info("Error sending confirmation : ",e)
 
-    return jsonify({"status":"Pick request Succeeded"}),200
+    return jsonify({"status":"Pick request executed by Robot. Check result in HMI"}),200
 
 @app.route('/pick_request', methods=['GET'])
 def pick_request():
