@@ -37,7 +37,7 @@ Once your virtual environment is activated, install the required Python packages
 pip install -r requirements.txt
 ```
 
-### Bash Aliases and Dependencies
+### Bash Aliases and .bashrc Modifications
 If you already have a .bash_aliases file then add the following to it:
 ```bash
 alias door_open='cd ~/robotcell_ws && source install/local_setup.bash && ros2 service call /door_status_set std_srvs/srv/SetBool data:\ false'
@@ -81,6 +81,7 @@ fi
 If they do, then check if the alias file name is the same as you have created.
 
 ### Running the Project
+## ROS Node Execution
 
 First execute the following in your terminal:
 ```bash
@@ -99,6 +100,7 @@ Then open three aditional terminals.
 In terminal number 1:
 ```bash
 source ~/.bashrc
+source .venv/bin/activate
 source install/setup.bash
 ros2 launch launcher launcher_launch.py 
 ```
@@ -108,6 +110,7 @@ You should see the HMI.
 In terminal number 2:
 ```bash
 source ~/.bashrc
+source .venv/bin/activate
 pick_request <pick_id> <quantity>
 ```
 Fill in the place holders with actual integer values.
@@ -115,6 +118,7 @@ Fill in the place holders with actual integer values.
 FInally in terminal number 3:
 ```bash
 source ~/.bashrc
+source .venv/bin/activate
 AND THEN
 doop_open
 OR
