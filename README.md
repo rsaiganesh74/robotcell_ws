@@ -26,7 +26,7 @@ Create and activate a virtual environment:
 
 ```bash
 # In the project root directory
-cd ~/robot_cell_ws
+cd ~/robotcell_ws
 python3 -m venv .venv
 source .venv/bin/activate
 ```
