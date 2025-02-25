@@ -12,7 +12,7 @@ class BarcodeScanner(Node):
     def __init__(self):
         super().__init__('barcode_scanner')
         
-        self.publish_interval = 0.5 #rate at which the publisher published the barcode number
+        self.publish_interval = 0.1 #rate at which the publisher published the barcode number
 
         self.pub = self.create_publisher(BarcodeNumberGenerated,'barcode',10) #keepinh 10 as depth so that subscriber has access to 10 last numbers in case of delay
 

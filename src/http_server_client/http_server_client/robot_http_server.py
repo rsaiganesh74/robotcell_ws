@@ -2,6 +2,7 @@
 
 from flask import Flask,request,jsonify
 import requests
+import logging
 
 import rclpy
 from rclpy.node import Node
@@ -32,6 +33,11 @@ class RobotHTTPServer(Node):
 
         self.pick_status=""
         self.pick_status_reason=""
+
+        self.pick_request_arrived = False
+
+        self.pick_id = 0
+        self.quantity = 0
 
         while not self.barcode_service_client.wait_for_service(timeout_sec=10):
             self.get_logger().info('Waiting for barcode scanner service..')
@@ -69,16 +75,34 @@ class RobotHTTPServer(Node):
 app = Flask(__name__)
 
 task_completion_url = "http://localhost:8081/confirmpick"
+response_reset_url = "http://localhost:8081/response_reset"
+
+data_for_response_reset= {"reset":"true"}
 
 @app.route('/pick', methods=['POST'])
 def pick():
     global robot_http_server
 
+    #whenever a new request comes, the response fields in the hmi must be reset
+    try:
+        response = requests.post(response_reset_url,json=data_for_response_reset)
+        response.raise_for_status()
+        robot_http_server.get_logger().info(f"Reset Successful: {response.json()}")
+        robot_http_server.pick_request_arrived = False
+
+    except Exception as e:
+        robot_http_server.get_logger().info(f"Error sending confirmation : {e}")
+
     data = request.get_json()
     pick_id = data.get("pick_id")
+    robot_http_server.pick_id = pick_id
+
     quantity = data.get("quantity")
     robot_http_server.pick_request.number_of_items = quantity
-    
+    robot_http_server.quantity = quantity
+
+    robot_http_server.pick_request_arrived = True
+
     robot_http_server.get_logger().info(f"Received pick request : {pick_id} and for {quantity} items.")
 
     #1 get barcode
@@ -93,8 +117,10 @@ def pick():
                 response = requests.post(task_completion_url,json=confirm_data)
                 response.raise_for_status()
                 robot_http_server.get_logger().info(f"Confirmation sent to WMS, received: {response.json()}")
+                robot_http_server.pick_request_arrived = False
+
             except Exception as e:
-                robot_http_server.get_logger().info("Error sending confirmation : ",e)
+                robot_http_server.get_logger().info(f"Error sending confirmation : {e}")
 
             return jsonify({"status":"Pick request Failed"}),400
     
@@ -114,10 +140,29 @@ def pick():
         response = requests.post(task_completion_url,json=confirm_data)
         response.raise_for_status()
         robot_http_server.get_logger().info(f"Confirmation sent to WMS, received: {response.json()['status']}")
+        robot_http_server.pick_request_arrived = False
+
     except Exception as e:
         robot_http_server.get_logger().info("Error sending confirmation : ",e)
 
     return jsonify({"status":"Pick request Succeeded"}),200
+
+@app.route('/pick_request', methods=['GET'])
+def pick_request():
+    global robot_http_server
+    if robot_http_server.pick_request_arrived:
+        result = {
+            "pick_id":robot_http_server.pick_id,
+            "quantity":robot_http_server.quantity
+        }
+
+        return jsonify(result)
+    else:
+        result = {
+            "pick_id":"Awaiting Request",
+            "quantity":"Awaiting Request"
+        }
+        return jsonify(result)
 
 def main():
     global robot_http_server
@@ -138,6 +183,10 @@ def main():
     try:
         ros_thread = threading.Thread(target=ros_spin, daemon=True) #running the ros spin in a different thread so as to not block flask
         ros_thread.start()
+
+        #hides jsonify output
+        log = logging.getLogger('werkzeug')
+        log.setLevel(logging.ERROR)
 
         # reloader is false so we don't spawn multiple processes.
         app.run(port=8080, debug=True, use_reloader=False, threaded=True)
